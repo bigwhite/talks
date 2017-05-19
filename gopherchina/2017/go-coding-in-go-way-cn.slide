@@ -975,6 +975,7 @@ The timer service routine:
 
   func handleRequestByDAM() {
     ctx, cf := context.WithCancel(context.Background())
+    defer cf() //cancel all service invoke requests 
     c1, c2, c3 := invokeService(ctx, service1), invokeService(ctx, service2),  
                    invokeService(ctx, service3)
     timeout := time.After(200 * time.Millisecond)
@@ -984,7 +985,6 @@ The timer service routine:
         case r := <-c2: //handle result2
         case r := <-c3: //handle result3
         case <-timeout:
-            cf() // cancel all service invoke requests
             return
         }
     }
